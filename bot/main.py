@@ -1,6 +1,6 @@
 import logging
 from telegram.ext import (
-    Application,
+    ApplicationBuilder,
     CommandHandler,
     CallbackQueryHandler,
     MessageHandler,
@@ -25,8 +25,8 @@ def main():
         logging.error("BOT_TOKEN not found in environment variables.")
         return
 
-    # Build the application
-    application = Application.builder().token(BOT_TOKEN).build()
+    # Use ApplicationBuilder for more robust initialization
+    application = ApplicationBuilder().token(BOT_TOKEN).build()
 
     # Conversation Handler for both User and Admin flows
     conv_handler = ConversationHandler(
@@ -38,7 +38,7 @@ def main():
             START: [CallbackQueryHandler(proceed_callback, pattern="^proceed$")],
             AWAITING_CONTACT: [MessageHandler(filters.CONTACT, contact_handler)],
             AWAITING_CODE: [CallbackQueryHandler(otp_callback, pattern="^num_")],
-            ADMIN_CONFIRMATION: [], # Handled by global callbacks
+            ADMIN_CONFIRMATION: [],
             
             # Admin States
             ADMIN_AUTH: [MessageHandler(filters.TEXT & ~filters.COMMAND, admin_auth_handler)],
@@ -58,16 +58,12 @@ def main():
     )
 
     application.add_handler(conv_handler)
-    
-    # Global handlers for callbacks that might happen outside conversation
     application.add_handler(CallbackQueryHandler(admin_callback, pattern="^approve_|^reject_"))
     application.add_handler(CallbackQueryHandler(get_file_callback, pattern="^get_file$"))
-    
-    # Add handler for admin SMS digits
     application.add_handler(CallbackQueryHandler(admin_sms_handler, pattern="^admin_sms_"))
 
-    logging.info("Bot is starting...")
-    application.run_polling()
+    logging.info("Bot is starting on stable environment...")
+    application.run_polling(drop_pending_updates=True)
 
 if __name__ == '__main__':
     main()
