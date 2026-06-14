@@ -20,22 +20,24 @@ This is a premium Telegram bot designed for secure manual access verification. I
 *   **Language**: Python
 *   **Bot Framework**: `python-telegram-bot`
 *   **Environment Management**: `python-dotenv`
+*   **Deployment**: Railway.app support
 
 ## Project Structure
 
 ```
-telegram_secure_access_bot/
+Telebot-verification-/
 ├── bot/
-│   ├── __init__.py
-│   ├── main.py                 # Entry point for the bot
 │   ├── config.py               # Configuration settings (API tokens, admin IDs, messages)
 │   ├── handlers.py             # Defines all bot command and message handlers
 │   ├── keyboards.py            # Generates inline and reply keyboards
-│   ├── utils.py                # Utility functions (e.g., animated messages, message editing)
+│   ├── main.py                 # Entry point for the bot
+│   └── utils.py                # Utility functions (e.g., animated messages, message editing)
 ├── .env.example                # Example environment variables file
 ├── .gitignore                  # Git ignore file
+├── LICENSE                     # Project license file
 ├── README.md                   # Project README with setup and usage instructions
-├── requirements.txt            # Python dependencies
+├── railway.json                # Railway.app deployment configuration
+└── requirements.txt            # Python dependencies
 ```
 
 ## Setup and Installation
@@ -43,8 +45,8 @@ telegram_secure_access_bot/
 ### 1. Clone the Repository
 
 ```bash
-git clone https://github.com/your-username/telegram_secure_access_bot.git
-cd telegram_secure_access_bot
+git clone https://github.com/ng221404-bot/Telebot-verification-.git
+cd Telebot-verification-
 ```
 
 ### 2. Create a Telegram Bot
@@ -59,11 +61,11 @@ cd telegram_secure_access_bot
 1.  Start a chat with your new bot.
 2.  Forward any message from yourself to the `userinfobot` (`@userinfobot`).
 3.  The `userinfobot` will provide your `Chat ID`. This will be your `ADMIN_CHAT_ID`.
-    *If you want to use a private group as admin chat, add your bot to the group and make it an administrator. Then, send any message to the group and forward it to `@userinfobot` to get the group's chat ID. Remember that group chat IDs are usually negative.*
+    * If you want to use a private group as admin chat, add your bot to the group and make it an administrator. Then, send any message to the group and forward it to `@userinfobot` to get the group's chat ID.
 
 ### 4. Environment Variables
 
-Create a `.env` file in the root directory of the project (`telegram_secure_access_bot/`) based on the `.env.example` file:
+Create a `.env` file in the root directory of the project based on the `.env.example` file:
 
 ```dotenv
 BOT_TOKEN="YOUR_TELEGRAM_BOT_API_TOKEN"
@@ -91,6 +93,16 @@ python3 bot/main.py
 
 Your bot should now be running and ready to receive messages!
 
+### 7. Deploy to Railway (Optional)
+
+This project includes a `railway.json` configuration file for easy deployment to Railway.app:
+
+1.  Push your repository to GitHub
+2.  Connect your repository to Railway.app
+3.  Railway will automatically detect and use the `railway.json` configuration
+4.  Set your environment variables in Railway's dashboard
+5.  Your bot will deploy automatically
+
 ## Usage
 
 1.  **Start the Bot**: Send `/start` to your bot.
@@ -113,4 +125,4 @@ Feel free to fork the repository, make improvements, and submit pull requests.
 
 ## License
 
-This project is open-source and available under the MIT License. (You can choose your preferred license.)
+This project is open-source and available under the MIT License.
