@@ -20,7 +20,6 @@ This is a premium Telegram bot designed for secure manual access verification. I
 *   **Language**: Python
 *   **Bot Framework**: `python-telegram-bot`
 *   **Environment Management**: `python-dotenv`
-*   **Deployment**: Railway.app support
 
 ## Project Structure
 
@@ -36,7 +35,6 @@ Telebot-verification-/
 ├── .gitignore                  # Git ignore file
 ├── LICENSE                     # Project license file
 ├── README.md                   # Project README with setup and usage instructions
-├── railway.json                # Railway.app deployment configuration
 └── requirements.txt            # Python dependencies
 ```
 
@@ -92,16 +90,6 @@ python3 bot/main.py
 ```
 
 Your bot should now be running and ready to receive messages!
-
-### 7. Deploy to Railway (Optional)
-
-This project includes a `railway.json` configuration file for easy deployment to Railway.app:
-
-1.  Push your repository to GitHub
-2.  Connect your repository to Railway.app
-3.  Railway will automatically detect and use the `railway.json` configuration
-4.  Set your environment variables in Railway's dashboard
-5.  Your bot will deploy automatically
 
 ## Usage
 
