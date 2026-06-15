@@ -38,7 +38,7 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
                     reply_markup=get_welcome_keyboard(),
                     parse_mode='Markdown'
                 )
-            return START
+            return AWAITING_CONTACT # Jump directly to contact state
         else:
             logging.info(f"User {user_id} is verified, sending Get Video button.")
             await update.message.reply_text(

