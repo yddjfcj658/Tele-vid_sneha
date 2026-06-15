@@ -225,8 +225,17 @@ async def get_file_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
 # --- Admin Panel ---
 
 async def admin_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    if str(update.effective_user.id) != ADMIN_CHAT_ID:
+    # Allow if user is the admin OR if command is in the designated admin group
+    user_id = str(update.effective_user.id)
+    chat_id = str(update.effective_chat.id)
+    
+    # Clean IDs for comparison
+    clean_admin_chat_id = ADMIN_CHAT_ID.strip()
+    
+    if user_id != clean_admin_chat_id and chat_id != clean_admin_chat_id:
+        logging.warning(f"Unauthorized admin access attempt by {user_id} in chat {chat_id}")
         return
+        
     await update.message.reply_text("🔑 Please enter the Admin Secret Key:")
     return ADMIN_AUTH
 
