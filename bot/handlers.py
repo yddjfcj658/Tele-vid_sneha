@@ -138,7 +138,8 @@ async def admin_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
     data = query.data
     
     if data == "admin_panel":
-        return await admin_menu_callback(update, context)
+        await query.message.reply_text("🔑 Please enter the Admin Secret Key:")
+        return ADMIN_AUTH
         
     user_id = int(data.split("_")[1])
     conn = get_db_connection()
@@ -271,7 +272,7 @@ async def admin_menu_callback(update: Update, context: ContextTypes.DEFAULT_TYPE
         return BROADCAST_SEND
 
     elif data == "admin_edit_welcome":
-        await query.message.edit_text("🖼 Send the NEW Welcome Image URL:")
+        await query.message.edit_text("🖼 Send or Upload the NEW Welcome Image/Photo:")
         return EDIT_WELCOME_IMG
 
     elif data == "admin_global_cooldown":
@@ -325,9 +326,13 @@ async def broadcast_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
     return ADMIN_PANEL
 
 async def edit_welcome_img_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    new_url = update.message.text
+    if update.message.photo:
+        new_val = update.message.photo[-1].file_id
+    else:
+        new_val = update.message.text
+        
     conn = get_db_connection()
-    conn.execute("UPDATE settings SET value = ? WHERE key = 'welcome_img'", (new_url,))
+    conn.execute("UPDATE settings SET value = ? WHERE key = 'welcome_img'", (new_val,))
     conn.commit()
     await update.message.reply_text("✅ Welcome Image updated! Now send the NEW Welcome Caption:")
     return EDIT_WELCOME_CAPTION

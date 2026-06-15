@@ -54,7 +54,7 @@ def main():
             SET_AUTO_DELETE: [MessageHandler(filters.TEXT & ~filters.COMMAND, custom_autodelete_handler)],
             RENAME_FILE: [MessageHandler(filters.TEXT & ~filters.COMMAND, file_rename_handler)],
             BROADCAST_SEND: [MessageHandler(filters.ALL & ~filters.COMMAND, broadcast_handler)],
-            EDIT_WELCOME_IMG: [MessageHandler(filters.TEXT & ~filters.COMMAND, edit_welcome_img_handler)],
+            EDIT_WELCOME_IMG: [MessageHandler((filters.TEXT | filters.PHOTO) & ~filters.COMMAND, edit_welcome_img_handler)],
             EDIT_WELCOME_CAPTION: [MessageHandler(filters.TEXT & ~filters.COMMAND, edit_welcome_caption_handler)]
         },
         fallbacks=[CommandHandler('start', start), CommandHandler('adm', admin_command)],

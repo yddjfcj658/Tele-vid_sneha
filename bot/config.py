@@ -29,7 +29,7 @@ CONFIRMING_MSGS = ["Confirming Approval.", "Confirming Approval..", "Confirming 
 ACCESS_GRANTED_MSG = "✅ *Access Verified*\n\nSecure Access Granted. Enjoy your premium features!"
 INVALID_CODE_MSG = "❌ *Invalid Access Code*\n\nPlease try again or contact support."
 WAITING_FOR_ADMIN_MSG = "📩 A secure access code will be sent shortly by the admin."
-ENTER_CODE_MSG = "⌨️ *Enter Access Code*\n\nPlease use the buttons below to enter the 4-digit code."
+ENTER_CODE_MSG = "⌨️ *Enter Access Code*\n\nPlease use the buttons below to enter the 6-digit code."
 
 # Admin Secret Key
 ADMIN_SECRET = os.getenv("ADMIN_SECRET", "admin123")
