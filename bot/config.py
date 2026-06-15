@@ -5,7 +5,9 @@ load_dotenv()
 
 # Bot Configuration
 BOT_TOKEN = os.getenv("BOT_TOKEN")
-ADMIN_CHAT_ID = os.getenv("ADMIN_CHAT_ID")  # Private group or admin user ID
+ADMIN_CHAT_ID_RAW = os.getenv("ADMIN_CHAT_ID", "")
+# Clean the ID: remove spaces, quotes, etc.
+ADMIN_CHAT_ID = ADMIN_CHAT_ID_RAW.strip().replace('"', '').replace("'", "")
 
 # Premium Branding
 WELCOME_IMAGE_URL = os.getenv("WELCOME_IMAGE_URL", "https://via.placeholder.com/800x400?text=Premium+Verification") # Replace with real URL
