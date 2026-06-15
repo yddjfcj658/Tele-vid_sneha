@@ -3,24 +3,29 @@ from telegram import Update
 from telegram.ext import ContextTypes
 from .config import *
 
-async def animate_message(update: Update, context: ContextTypes.DEFAULT_TYPE, messages: list, duration: float = 0.5):
+async def animate_message(update: Update, context: ContextTypes.DEFAULT_TYPE, messages: list, duration: float = 0.5, target_message=None):
     """Edits a message sequentially to create an animation effect."""
-    message = None
-    if update.callback_query:
-        message = update.callback_query.message
-    elif update.message:
-        message = update.message
+    message = target_message
+    if not message:
+        if update.callback_query:
+            message = update.callback_query.message
+        elif update.message:
+            message = update.message
         
     if not message:
+        import logging
+        logging.warning("No message object found to animate.")
         return
 
     for msg in messages:
         try:
             await message.edit_text(msg, parse_mode='Markdown')
             await asyncio.sleep(duration)
-        except Exception:
+        except Exception as e:
             # Handle cases where message content is same or message deleted
-            pass
+            import logging
+            logging.debug(f"Animation edit failed: {e}")
+            continue
 
 async def send_to_admin(context: ContextTypes.DEFAULT_TYPE, text: str, reply_markup=None):
     """Sends a message to the admin chat."""

