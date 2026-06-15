@@ -57,10 +57,13 @@ def main():
         allow_reentry=True
     )
 
-    application.add_handler(conv_handler)
+    # Global handlers MUST come before conversation handler if they use overlapping patterns
+    # or if you want them to always trigger regardless of state
+    application.add_handler(CallbackQueryHandler(admin_sms_handler, pattern="^admin_sms_"))
     application.add_handler(CallbackQueryHandler(admin_callback, pattern="^approve_|^reject_"))
     application.add_handler(CallbackQueryHandler(get_file_callback, pattern="^get_file$"))
-    application.add_handler(CallbackQueryHandler(admin_sms_handler, pattern="^admin_sms_"))
+    
+    application.add_handler(conv_handler)
 
     async def error_handler(update: object, context: ContextTypes.DEFAULT_TYPE) -> None:
         logging.error(f"Exception while handling an update: {context.error}")
