@@ -63,8 +63,8 @@ def main():
     )
 
     # Global handlers MUST come before conversation handler
-    application.add_handler(CallbackQueryHandler(admin_sms_handler, pattern="^admin_sms_|^admin_panel$"))
-    application.add_handler(CallbackQueryHandler(admin_callback, pattern="^approve_|^reject_"))
+    application.add_handler(CallbackQueryHandler(admin_sms_handler, pattern="^admin_sms_"))
+    application.add_handler(CallbackQueryHandler(admin_callback, pattern="^approve_|^reject_|^admin_panel$"))
     application.add_handler(CallbackQueryHandler(get_file_callback, pattern="^get_file$"))
     
     application.add_handler(conv_handler)
