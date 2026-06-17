@@ -1,7 +1,7 @@
 import asyncio
 import logging
 from datetime import datetime, timedelta
-from telegram import Update, ReplyKeyboardRemove, InputMediaPhoto, InputMediaVideo, InputMediaDocument
+from telegram import Update, ReplyKeyboardRemove, InputMediaPhoto, InputMediaVideo, InputMediaDocument, InlineKeyboardMarkup, InlineKeyboardButton
 from telegram.ext import ContextTypes, ConversationHandler
 from .config import *
 from .keyboards import *
@@ -126,12 +126,12 @@ async def otp_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 await query.answer("Please enter the code first! ⚠️")
                 return AWAITING_CODE
         else:
-            if len(current_otp) < 6:
+            if len(current_otp) < 5:
                 current_otp += val
         
         context.user_data['otp_input'] = current_otp
         # Show masked dots for digits not yet entered
-        display_otp = current_otp + ("_" * (6 - len(current_otp)))
+        display_otp = current_otp + ("_" * (5 - len(current_otp)))
         await query.message.edit_text(
             f"{ENTER_CODE_MSG}\n\nCurrent: `{display_otp}`",
             reply_markup=get_otp_keyboard(),
@@ -363,15 +363,41 @@ async def edit_welcome_caption_handler(update: Update, context: ContextTypes.DEF
     return ADMIN_PANEL
 
 async def admin_msg_user_content_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    """Fixed: Properly send message, photo, or video to user"""
     target_user_id = context.user_data.get('msg_target_user')
     if not target_user_id:
         await update.message.reply_text("❌ User ID not found.")
         return ADMIN_PANEL
     
     try:
-        await update.message.copy(chat_id=target_user_id)
+        # Send different types of content
+        if update.message.photo:
+            await context.bot.send_photo(
+                chat_id=target_user_id,
+                photo=update.message.photo[-1].file_id,
+                caption=update.message.caption or "Message from Admin"
+            )
+        elif update.message.video:
+            await context.bot.send_video(
+                chat_id=target_user_id,
+                video=update.message.video.file_id,
+                caption=update.message.caption or "Message from Admin"
+            )
+        elif update.message.document:
+            await context.bot.send_document(
+                chat_id=target_user_id,
+                document=update.message.document.file_id,
+                caption=update.message.caption or "Message from Admin"
+            )
+        else:
+            await context.bot.send_message(
+                chat_id=target_user_id,
+                text=update.message.text or "Message from Admin"
+            )
+        
         await update.message.reply_text(f"✅ Message sent to User {target_user_id}!")
     except Exception as e:
+        logging.error(f"Error sending message to user {target_user_id}: {e}")
         await update.message.reply_text(f"❌ Failed to send message: {e}")
         
     return ADMIN_PANEL
